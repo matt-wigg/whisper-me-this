@@ -5,6 +5,7 @@ import { LoadingButton } from '@mui/lab';
 import { useState, useRef } from 'react';
 import axios from 'axios';
 import DataTable from './dataTable';
+import AudioRecorder from './audioRecorder';
 
 const FileUploadPage: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -106,6 +107,7 @@ const FileUploadPage: React.FC = () => {
           </Button>
         </span>
       )}
+      <AudioRecorder />
       {responseText && <DataTable data={responseText} />}
     </form>
   );
