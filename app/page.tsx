@@ -66,7 +66,7 @@ const FileUploadPage: React.FC = () => {
               variant='outlined'
               size='large'
             >
-              Loading
+              Decoding File
             </LoadingButton>
           ) : (
             <Button
@@ -109,12 +109,8 @@ const FileUploadPage: React.FC = () => {
           </>
         )}
       </form>
-      <div style={{ paddingTop: '1rem' }}>
-        <AudioRecorder
-          setResponseText={setResponseText}
-          isLoading={isLoading}
-          setIsLoading={setIsLoading}
-        />
+      <div style={{ paddingTop: '0.5em' }}>
+        <AudioRecorder setResponseText={setResponseText} />
       </div>
       {responseText && <DataTable data={responseText} />}
     </>

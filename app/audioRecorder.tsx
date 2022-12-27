@@ -9,11 +9,7 @@ type AudioRecorderProps = {
   setResponseText: React.SetStateAction<string>;
 };
 
-const AudioRecorder: React.FC = ({
-  setResponseText,
-  isLoading,
-  setIsLoading,
-}) => {
+const AudioRecorder: React.FC = ({ setResponseText }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [recording, setRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
@@ -21,6 +17,7 @@ const AudioRecorder: React.FC = ({
     null
   );
   const [stream, setStream] = useState<MediaStream | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     console.log(isLoading);
@@ -86,27 +83,16 @@ const AudioRecorder: React.FC = ({
 
   return (
     <div>
-      {isLoading ? (
-        <LoadingButton
-          loading
-          loadingPosition='start'
-          variant='outlined'
+      {!recording && !isLoading && (
+        <Button
+          onClick={startRecording}
+          variant='contained'
+          component='label'
           size='large'
+          color='error'
         >
-          Loading
-        </LoadingButton>
-      ) : (
-        !recording && (
-          <Button
-            onClick={startRecording}
-            variant='contained'
-            component='label'
-            size='large'
-            color='error'
-          >
-            Start Recording
-          </Button>
-        )
+          Start Recording
+        </Button>
       )}
       {recording && (
         <Button
@@ -114,16 +100,22 @@ const AudioRecorder: React.FC = ({
           variant='contained'
           component='label'
           size='large'
-          color='error'
+          color='secondary'
         >
           Stop Recording
         </Button>
       )}
-      {audioBlob && !recording && !isLoading && (
-        <>
-          <span style={{ display: recording ? 'none' : 'block' }}>
-            <audio ref={audioRef} controls />
-          </span>
+      {isLoading ? (
+        <LoadingButton
+          loading
+          loadingPosition='start'
+          variant='outlined'
+          size='large'
+        >
+          Decoding Recording
+        </LoadingButton>
+      ) : audioBlob && !recording && (
+        <span style={{ padding: '0.5rem' }}>
           <Button
             onClick={(e) => handleSubmit(e)}
             variant='contained'
@@ -131,8 +123,21 @@ const AudioRecorder: React.FC = ({
             size='large'
             color='success'
           >
-            Submit
+            Upload
           </Button>
+        </span>
+      )}
+      {audioBlob && !recording && (
+        <>
+          <span
+            style={{
+              display: recording ? 'none' : 'block',
+              paddingTop: '0.5rem',
+              paddingBottom: '0.5rem',
+            }}
+          >
+            <audio ref={audioRef} controls />
+          </span>
         </>
       )}
     </div>
