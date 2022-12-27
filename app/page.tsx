@@ -56,60 +56,68 @@ const FileUploadPage: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <FormControl>
-        {isLoading ? (
-          <LoadingButton
-            loading
-            loadingPosition='start'
-            variant='outlined'
-            size='large'
-          >
-            Loading
-          </LoadingButton>
-        ) : (
-          <Button
-            variant='contained'
-            component='label'
-            disabled={isLoading}
-            size='large'
-          >
-            {isLoading ? 'Please wait' : 'Choose File'}
-            <input
-              hidden
-              accept='audio/*'
-              multiple
-              type='file'
-              inputref={fileInputRef}
-              onChange={handleFileChange}
+    <>
+      <form onSubmit={handleSubmit}>
+        <FormControl>
+          {isLoading ? (
+            <LoadingButton
+              loading
+              loadingPosition='start'
+              variant='outlined'
+              size='large'
+            >
+              Loading
+            </LoadingButton>
+          ) : (
+            <Button
+              variant='contained'
+              component='label'
               disabled={isLoading}
-            />
-          </Button>
+              size='large'
+            >
+              {isLoading ? 'Please wait' : 'Choose File'}
+              <input
+                hidden
+                accept='audio/*'
+                multiple
+                type='file'
+                inputref={fileInputRef}
+                onChange={handleFileChange}
+                disabled={isLoading}
+              />
+            </Button>
+          )}
+        </FormControl>
+        {isLoading ? null : (
+          <>
+            <span
+              style={{
+                padding: '0.5rem',
+              }}
+            >
+              {selectedFile?.name || ' Select file'}
+            </span>
+            <Button
+              variant='contained'
+              color='success'
+              type='submit'
+              size='large'
+              disabled={isLoading || !selectedFile}
+            >
+              {!selectedFile ? 'No File' : 'Upload'}
+            </Button>
+          </>
         )}
-        <FormHelperText>
-          {!selectedFile && !isLoading
-            ? 'choose an audio file'
-            : isLoading
-            ? 'decoding audio file...'
-            : selectedFile.name || 'No File'}
-        </FormHelperText>
-      </FormControl>
-      {isLoading ? null : (
-        <span style={{ paddingLeft: '0.5rem' }}>
-          <Button
-            variant='outlined'
-            color='primary'
-            type='submit'
-            size='large'
-            disabled={isLoading || !selectedFile}
-          >
-            {!selectedFile ? 'No File' : 'Upload'}
-          </Button>
-        </span>
-      )}
-      <AudioRecorder />
+      </form>
+      <div style={{ paddingTop: '1rem' }}>
+        <AudioRecorder
+          setResponseText={setResponseText}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+        />
+      </div>
       {responseText && <DataTable data={responseText} />}
-    </form>
+    </>
   );
 };
 

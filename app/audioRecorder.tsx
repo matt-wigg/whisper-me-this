@@ -1,9 +1,19 @@
 'use client';
 
+import { Button } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 import React, { useRef, useState, useEffect } from 'react';
 import axios from 'axios';
 
-const AudioRecorder: React.FC = () => {
+type AudioRecorderProps = {
+  setResponseText: React.SetStateAction<string>;
+};
+
+const AudioRecorder: React.FC = ({
+  setResponseText,
+  isLoading,
+  setIsLoading,
+}) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [recording, setRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
@@ -13,6 +23,7 @@ const AudioRecorder: React.FC = () => {
   const [stream, setStream] = useState<MediaStream | null>(null);
 
   useEffect(() => {
+    console.log(isLoading);
     if (audioRef.current && audioBlob) {
       audioRef.current.src = URL.createObjectURL(audioBlob);
       return () => URL.revokeObjectURL(audioRef.current.src);
@@ -47,9 +58,10 @@ const AudioRecorder: React.FC = () => {
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    setIsLoading(true);
+    setResponseText('');
     const formData = new FormData();
     formData.append('audio', audioBlob as Blob, 'recording.webm');
-
     try {
       const response = await axios.post(
         'http://127.0.0.1:5000/test/en/small',
@@ -60,34 +72,67 @@ const AudioRecorder: React.FC = () => {
           },
         }
       );
+      console.log(setResponseText);
       console.log(response.data.results[0].transcript.segments);
+      setResponseText(response.data.results[0].transcript.segments);
+      setIsLoading(false);
     } catch (error) {
       console.log('error');
       console.log(error);
+      setIsLoading(false);
     }
     event.preventDefault();
   };
 
   return (
     <div>
-      {!recording && (
-        <button type='button' onClick={startRecording}>
-          Start Recording
-        </button>
+      {isLoading ? (
+        <LoadingButton
+          loading
+          loadingPosition='start'
+          variant='outlined'
+          size='large'
+        >
+          Loading
+        </LoadingButton>
+      ) : (
+        !recording && (
+          <Button
+            onClick={startRecording}
+            variant='contained'
+            component='label'
+            size='large'
+            color='error'
+          >
+            Start Recording
+          </Button>
+        )
       )}
       {recording && (
-        <button type='button' onClick={stopRecording}>
+        <Button
+          onClick={stopRecording}
+          variant='contained'
+          component='label'
+          size='large'
+          color='error'
+        >
           Stop Recording
-        </button>
+        </Button>
       )}
-      {audioBlob && (
+      {audioBlob && !recording && !isLoading && (
         <>
-
+          <span style={{ display: recording ? 'none' : 'block' }}>
             <audio ref={audioRef} controls />
-
-          <button onClick={(e) => handleSubmit(e)} type='submit'>
+          </span>
+          <Button
+            onClick={(e) => handleSubmit(e)}
+            variant='contained'
+            component='label'
+            size='large'
+            color='success'
+          >
             Submit
-          </button>
+          </Button>
         </>
       )}
     </div>
