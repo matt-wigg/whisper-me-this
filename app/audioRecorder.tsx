@@ -9,7 +9,7 @@ type AudioRecorderProps = {
   setResponseText: React.SetStateAction<string>;
 };
 
-const AudioRecorder: React.FC = ({ setResponseText }) => {
+const AudioRecorder: React.FC = ({ setResponseText, selectedLanguage, selectedModelSize }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [recording, setRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
@@ -59,9 +59,10 @@ const AudioRecorder: React.FC = ({ setResponseText }) => {
     setResponseText('');
     const formData = new FormData();
     formData.append('audio', audioBlob as Blob, 'recording.webm');
+    const url = `http://127.0.0.1:5000/test/${selectedLanguage}/${selectedModelSize}`;
     try {
       const response = await axios.post(
-        'http://127.0.0.1:5000/test/en/small',
+        url,
         formData,
         {
           headers: {
