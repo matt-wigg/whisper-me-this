@@ -3,17 +3,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import axios from 'axios';
 
-import { makeStyles } from '@mui/styles';
-
-const useStyles = makeStyles((theme) => ({
-  audio: {
-    width: '300px',
-    height: '50px',
-    
-    
-  },
-}));
-
 const AudioRecorder: React.FC = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [recording, setRecording] = useState(false);
@@ -22,7 +11,6 @@ const AudioRecorder: React.FC = () => {
     null
   );
   const [stream, setStream] = useState<MediaStream | null>(null);
-  const classes = useStyles();
 
   useEffect(() => {
     if (audioRef.current && audioBlob) {
@@ -64,7 +52,7 @@ const AudioRecorder: React.FC = () => {
 
     try {
       const response = await axios.post(
-        'http://127.0.0.1:5000/test',
+        'http://127.0.0.1:5000/test/en/small',
         formData,
         {
           headers: {
@@ -95,7 +83,7 @@ const AudioRecorder: React.FC = () => {
       {audioBlob && (
         <>
 
-            <audio ref={audioRef} controls className={classes.audio}/>
+            <audio ref={audioRef} controls />
 
           <button onClick={(e) => handleSubmit(e)} type='submit'>
             Submit

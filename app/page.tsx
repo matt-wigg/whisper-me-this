@@ -35,7 +35,7 @@ const FileUploadPage: React.FC = () => {
       const formData = new FormData();
       formData.append('file', selectedFile);
       const response = await axios.post(
-        'http://127.0.0.1:5000/test',
+        'http://127.0.0.1:5000/test/en/small',
         formData,
         {
           headers: {
@@ -80,7 +80,7 @@ const FileUploadPage: React.FC = () => {
               accept='audio/*'
               multiple
               type='file'
-              inputRef={fileInputRef}
+              inputref={fileInputRef}
               onChange={handleFileChange}
               disabled={isLoading}
             />
