@@ -20,7 +20,6 @@ const AudioRecorder: React.FC = ({ setResponseText, selectedLanguage, selectedMo
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    console.log(isLoading);
     if (audioRef.current && audioBlob) {
       audioRef.current.src = URL.createObjectURL(audioBlob);
       return () => URL.revokeObjectURL(audioRef.current.src);
@@ -70,13 +69,10 @@ const AudioRecorder: React.FC = ({ setResponseText, selectedLanguage, selectedMo
           },
         }
       );
-      console.log(setResponseText);
-      console.log(response.data.results[0].transcript.segments);
       setResponseText(response.data.results[0].transcript.segments);
       setIsLoading(false);
     } catch (error) {
-      console.log('error');
-      console.log(error);
+      console.error(error);
       setIsLoading(false);
     }
     event.preventDefault();

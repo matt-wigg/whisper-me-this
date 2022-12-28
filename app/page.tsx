@@ -131,16 +131,9 @@ const FileUploadPage: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    if (!selectedFile || isLoading) {
-      console.log('No file selected or form is read-only');
-      return;
-    }
-
     setSelectedFile(null);
     setResponseText('');
     setIsLoading(true);
-
     try {
       const formData = new FormData();
       formData.append('file', selectedFile);
@@ -150,7 +143,6 @@ const FileUploadPage: React.FC = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
-      console.log(response.data.results[0].transcript.segments);
       setResponseText(response.data.results[0].transcript.segments);
       setIsLoading(false);
       if (fileInputRef.current) {
