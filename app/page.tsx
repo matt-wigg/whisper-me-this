@@ -2,12 +2,14 @@
 
 import { Button, FormControl, Select } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { useState, useRef } from 'react';
+import { useState, useRef, SetStateAction } from 'react';
 import axios from 'axios';
 import DataTable from './dataTable';
 import AudioRecorder from './audioRecorder';
 
-const Languages = {
+type LanguageCodes = 'en' | 'zh' | 'de' | 'es' | 'ru' | 'ko' | 'fr' | 'ja' | 'pt' | 'tr' | 'pl' | 'ca' | 'nl' | 'ar' | 'sv' | 'it' | 'id' | 'hi' | 'fi' | 'vi' | 'he' | 'uk' | 'el' | 'ms' | 'cs' | 'ro' | 'da' | 'hu' | 'ta' | 'no' | 'th' | 'ur' | 'hr' | 'bg' | 'lt' | 'la' | 'mi' | 'ml' | 'cy' | 'sk' | 'te' | 'fa' | 'lv' | 'bn' | 'sr' | 'az' | 'sl' | 'kn' | 'et' | 'mk' | 'br' | 'eu' | 'is' | 'hy' | 'ne' | 'mn' | 'bs' | 'kk' | 'sq' | 'sw' | 'gl' | 'mr' | 'pa' | 'si' | 'km' | 'sn' | 'yo' | 'so' | 'af' | 'oc' | 'ka' | 'be' | 'tg' | 'sd' | 'gu' | 'am' | 'yi' | 'lo' | 'uz' | 'fo' | 'ht' | 'ps' | 'tk' | 'nn' | 'mt' | 'sa' | 'lb' | 'bo' | 'tl' | 'mg' | 'as' | 'tt' | 'haw' | 'ln' | 'ha' | 'ba' | 'jw' | 'su';
+
+const Languages: Record<LanguageCodes, string>  = {
   en: 'English',
   zh: 'Chinese',
   de: 'German',
@@ -109,18 +111,18 @@ const Languages = {
 };
 
 const FileUploadPage: React.FC = () => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [responseText, setResponseText] = useState('');
+  const [selectedFile, setSelectedFile] = useState<File | any>(null);
+  const [responseText, setResponseText] = useState<Array<[]> | any>('');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [selectedModelSize, setSelectedModelSize] = useState('base');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Handle changes to the language and model size select inputs
-  const handleLanguageChange = (event) => {
+  const handleLanguageChange = (event: { target: { value: SetStateAction<string>; }; }) => {
     setSelectedLanguage(event.target.value);
   };
-  const handleModelSizeChange = (event) => {
+  const handleModelSizeChange = (event: { target: { value: SetStateAction<string>; }; }) => {
     setSelectedModelSize(event.target.value);
   };
 
@@ -193,7 +195,7 @@ const FileUploadPage: React.FC = () => {
           >
             {Object.keys(Languages).map((key) => (
               <option key={key} value={key}>
-                {Languages[key]}
+                {Languages[key as LanguageCodes]}
               </option>
             ))}
           </Select>
@@ -224,7 +226,6 @@ const FileUploadPage: React.FC = () => {
                   accept='audio/*'
                   multiple
                   type='file'
-                  inputref={fileInputRef}
                   onChange={handleFileChange}
                   disabled={isLoading}
                 />

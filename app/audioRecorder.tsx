@@ -6,10 +6,12 @@ import React, { useRef, useState, useEffect } from 'react';
 import axios from 'axios';
 
 type AudioRecorderProps = {
-  setResponseText: React.SetStateAction<string>;
+  setResponseText: React.Dispatch<React.SetStateAction<string>>;
+  selectedLanguage: string;
+  selectedModelSize: string;
 };
 
-const AudioRecorder: React.FC = ({
+const AudioRecorder: React.FC<AudioRecorderProps> = ({
   setResponseText,
   selectedLanguage,
   selectedModelSize,
@@ -26,7 +28,8 @@ const AudioRecorder: React.FC = ({
   useEffect(() => {
     if (audioRef.current && audioBlob) {
       audioRef.current.src = URL.createObjectURL(audioBlob);
-      return () => URL.revokeObjectURL(audioRef.current.src);
+      const source = audioRef.current.src
+      return () => URL.revokeObjectURL(source);
     }
   }, [audioBlob]);
 
@@ -57,7 +60,7 @@ const AudioRecorder: React.FC = ({
     setRecording(false);
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.MouseEvent<HTMLLabelElement, MouseEvent>) => {
     setIsLoading(true);
     setResponseText('');
     const formData = new FormData();
