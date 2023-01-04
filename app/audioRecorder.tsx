@@ -65,7 +65,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({
     setResponseText('');
     const formData = new FormData();
     formData.append('audio', audioBlob as Blob, 'recording.webm');
-    const url = `http://ec2-13-56-241-48.us-west-1.compute.amazonaws.com:8000/test/${selectedLanguage}/${selectedModelSize}`;
+    const url = `https://ec2-13-56-241-48.us-west-1.compute.amazonaws.com:8000/test/${selectedLanguage}/${selectedModelSize}`;
     try {
       const response = await axios.post(url, formData, {
         headers: {
