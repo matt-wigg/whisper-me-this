@@ -9,7 +9,11 @@ type AudioRecorderProps = {
   setResponseText: React.SetStateAction<string>;
 };
 
-const AudioRecorder: React.FC = ({ setResponseText, selectedLanguage, selectedModelSize }) => {
+const AudioRecorder: React.FC = ({
+  setResponseText,
+  selectedLanguage,
+  selectedModelSize,
+}) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [recording, setRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
@@ -58,17 +62,13 @@ const AudioRecorder: React.FC = ({ setResponseText, selectedLanguage, selectedMo
     setResponseText('');
     const formData = new FormData();
     formData.append('audio', audioBlob as Blob, 'recording.webm');
-    const url = `http://127.0.0.1:5000/test/${selectedLanguage}/${selectedModelSize}`;
+    const url = `http://ec2-13-56-241-48.us-west-1.compute.amazonaws.com:8000/test/${selectedLanguage}/${selectedModelSize}`;
     try {
-      const response = await axios.post(
-        url,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
+      const response = await axios.post(url, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       setResponseText(response.data.results[0].transcript.segments);
       setIsLoading(false);
     } catch (error) {
@@ -111,18 +111,21 @@ const AudioRecorder: React.FC = ({ setResponseText, selectedLanguage, selectedMo
         >
           Decoding Recording
         </LoadingButton>
-      ) : audioBlob && !recording && (
-        <span style={{ padding: '0.5rem' }}>
-          <Button
-            onClick={(e) => handleSubmit(e)}
-            variant='contained'
-            component='label'
-            size='large'
-            color='success'
-          >
-            Upload
-          </Button>
-        </span>
+      ) : (
+        audioBlob &&
+        !recording && (
+          <span style={{ padding: '0.5rem' }}>
+            <Button
+              onClick={(e) => handleSubmit(e)}
+              variant='contained'
+              component='label'
+              size='large'
+              color='success'
+            >
+              Upload
+            </Button>
+          </span>
+        )
       )}
       {audioBlob && !recording && (
         <>

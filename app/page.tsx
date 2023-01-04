@@ -137,7 +137,7 @@ const FileUploadPage: React.FC = () => {
     try {
       const formData = new FormData();
       formData.append('file', selectedFile);
-      const url = `http://127.0.0.1:5000/test/${selectedLanguage}/${selectedModelSize}`;
+      const url = `http://ec2-13-56-241-48.us-west-1.compute.amazonaws.com:8000/test/${selectedLanguage}/${selectedModelSize}`;
       const response = await axios.post(url, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
